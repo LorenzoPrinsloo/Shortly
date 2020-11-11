@@ -1,3 +1,5 @@
+enablePlugins(JavaAppPackaging)
+
 val Http4sVersion = "0.20.23"
 val CirceVersion = "0.11.2"
 val Specs2Version = "4.1.0"
@@ -19,7 +21,8 @@ lazy val root = (project in file("."))
       "org.http4s"      %% "http4s-dsl"          % Http4sVersion,
       "io.circe"        %% "circe-generic"       % CirceVersion,
       "org.specs2"      %% "specs2-core"         % Specs2Version % "test",
-      "ch.qos.logback"  %  "logback-classic"     % LogbackVersion
+      "ch.qos.logback"  %  "logback-classic"     % LogbackVersion,
+      "com.typesafe"    % "config"               % "1.4.0"
     ),
     addCompilerPlugin("org.typelevel" %% "kind-projector"     % "0.10.3"),
     addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.0")

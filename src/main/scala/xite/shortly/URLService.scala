@@ -72,7 +72,7 @@ object URLService {
           .map { redirectCounts =>
             RedirectStatsResult(
               redirectCounts.map(count =>
-                count.copy(shortlyIdentifier = shortUrl(count.shortlyIdentifier)))
+                count.copy(shortlyUrl = shortUrl(count.shortlyUrl)))
             )
           }
       )(Async[F])

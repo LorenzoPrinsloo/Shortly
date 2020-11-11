@@ -86,12 +86,12 @@ if a Id is provided, filters the results to the specific Short URL mapping.
     {
         "stats": [
             {
-                "shortUrl": "localhost:8080/ly/c7960131",
+                "shortlyUrl": "localhost:8080/ly/c7960131",
                 "fullURL": "https://www.udemy.com/course/scala-advanced-part-2/learn/lecture/9170246#overview",
                 "redirects": 3 // total number of redirects for the url
             },
             {
-                "shortUrl": "localhost:8080/ly/4bb13ed1",
+                "shortlyUrl": "localhost:8080/ly/4bb13ed1",
                 "fullURL": "https://www.youtube.com/watch?v=sxon2U1eZS8",
                 "redirects": 2
             }
@@ -121,3 +121,23 @@ if a Id is provided, filters the results to the specific short URL mapping.
             }
         ]
     }
+    
+## Running via Docker
+
+Open up a sbt shell and run the following command
+
+    docker:stage
+    
+this will generate a native executable for the project 
+and a Dockerfile that points to the location of it.
+
+Next run the following command in another terminal window
+
+    docker-compose up --force-recreate
+    
+Which will use the configured docker-compose.yml to start up
+ - a instance of the main REST app (shortly-app)
+ - a  postgresql database instance (shortly-postgres)
+ 
+Once that's run you should see the web-service start on port 8080
+

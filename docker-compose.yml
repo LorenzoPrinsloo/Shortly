@@ -1,0 +1,26 @@
+version: '3'
+services:
+
+  shortly-postgres:
+    image: "postgres:9.6-alpine"
+    container_name: shortly-postgres
+    volumes:
+      - shortly-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  shortly-app:
+    build: ./target/docker/stage
+    container_name: shortly-app
+    environment:
+      - DB_SERVER=shortly-postgres
+    ports:
+      - 8080:8080
+    links:
+      - shortly-postgres
+volumes:
+  shortly-data:
