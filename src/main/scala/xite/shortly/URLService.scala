@@ -82,6 +82,7 @@ object URLService {
       )(Async[F])
     }
 
+
     def redirect(shortlyIdentifier: String): F[URLMapping] = {
       Async.liftIO(
         urlRedirectDAO.findByShortlyIdentifier(shortlyIdentifier)
