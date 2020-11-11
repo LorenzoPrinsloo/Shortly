@@ -69,7 +69,12 @@ object URLService {
         maybeId.fold(ifEmpty = redirectEventDAO.redirectsByUrl()) { id =>
           redirectEventDAO.redirectByUrl(id)
         }.transact(xa)
-          .map(RedirectStatsResult.apply)
+          .map { redirectCounts =>
+            RedirectStatsResult(
+              redirectCounts.map(count =>
+                count.copy(shortlyIdentifier = shortUrl(count.shortlyIdentifier)))
+            )
+          }
       )(Async[F])
     }
 
