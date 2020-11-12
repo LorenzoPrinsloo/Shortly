@@ -1,4 +1,7 @@
 enablePlugins(JavaAppPackaging)
+enablePlugins(AshScriptPlugin)
+
+dockerBaseImage := "openjdk:jre-alpine"
 
 val Http4sVersion = "0.20.23"
 val CirceVersion = "0.11.2"
