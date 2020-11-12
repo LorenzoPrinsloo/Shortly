@@ -16,9 +16,12 @@ import org.http4s.circe._
 import xite.shortly.results.{HourlyStatsResult, ListResult, RedirectStatsResult, ShortenResult, URLMapping}
 import java.util.UUID
 import doobie.implicits._
+import doobie.util.transactor.Transactor
+import xite.shortly.database.tables.URLRedirect
 import xite.shortly.database.{RedirectEventDAO, URLRedirectDAO}
 
 trait URLService[F[_]]{
+  /** APIS */
   def shorten(url: String): F[ShortenResult]
   def list: F[ListResult]
   def redirectStats(maybeId: Option[UUID]): F[RedirectStatsResult]
@@ -31,12 +34,13 @@ object URLService {
 
   final case class URLError(e: String) extends Exception
 
-  lazy val urlRedirectDAO = new URLRedirectDAO()
-  lazy val redirectEventDAO = new RedirectEventDAO()
-
   lazy val domain: String = "localhost:8080/ly/"
 
-  def impl[F[_]: Async](C: Client[F]): URLService[F] = new URLService[F]{
+  def impl[F[_]: Async](
+     implicit urlRedirectDAO: URLRedirectDAO,
+     redirectEventDAO: RedirectEventDAO,
+     transactor: Transactor[IO]): URLService[F] = new URLService[F]{
+
     val dsl = new Http4sClientDsl[F]{}
     import dsl._
 
@@ -47,7 +51,6 @@ object URLService {
 
       Async.liftIO(
         urlRedirectDAO.findOrInsertShortUrl(generatedHash, url)
-          .transact(xa)
           .map(redirect => ShortenResult(redirect.id, shortUrl(redirect.shortly_identifier)))
       )(Async[F])
     }
@@ -55,7 +58,6 @@ object URLService {
     def list: F[ListResult] = {
       Async.liftIO(
         urlRedirectDAO.list
-          .transact(xa)
           .map { redirects =>
             redirects.map { redirect =>
               URLMapping(shortUrl(redirect.shortly_identifier), redirect.full_url)
@@ -66,9 +68,7 @@ object URLService {
 
     def redirectStats(maybeId: Option[UUID]): F[RedirectStatsResult] = {
       Async.liftIO(
-        maybeId.fold(ifEmpty = redirectEventDAO.redirectsByUrl()) { id =>
-          redirectEventDAO.redirectByUrl(id)
-        }.transact(xa)
+        redirectEventDAO.redirectsByUrl(maybeId)
           .map { redirectCounts =>
             RedirectStatsResult(
               redirectCounts.map(count =>
@@ -80,24 +80,18 @@ object URLService {
 
     def hourlyRedirectStats(maybeId: Option[UUID]): F[HourlyStatsResult] = {
       Async.liftIO(
-        maybeId.fold(ifEmpty = redirectEventDAO.redirectsPerHour()) { id =>
-          redirectEventDAO.redirectsPerHourById(id)
-        }.transact(xa)
+        redirectEventDAO.redirectsPerHour(maybeId)
           .map(HourlyStatsResult.apply)
       )(Async[F])
     }
 
 
     def redirect(shortlyIdentifier: String): F[URLMapping] = {
-      Async.liftIO(
-        urlRedirectDAO.findByShortlyIdentifier(shortlyIdentifier)
-          .transact(xa)
-      )(Async[F])
+      Async.liftIO(urlRedirectDAO.findByShortlyIdentifier(shortlyIdentifier))(Async[F])
         .flatMap { maybeRedirect =>
         maybeRedirect.fold(ifEmpty = Async[F].raiseError[URLMapping](URLError("No available shortly url redirect."))) { redirect =>
           Async.liftIO(
             redirectEventDAO.insert(UUID.randomUUID(), redirect.id)
-              .transact(xa)
               .map(_ => URLMapping(shortUrl(redirect.shortly_identifier), redirect.full_url))
           )(Async[F])
         }

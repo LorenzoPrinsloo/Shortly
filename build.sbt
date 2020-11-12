@@ -6,6 +6,7 @@ dockerBaseImage := "openjdk:jre-alpine"
 val Http4sVersion = "0.20.23"
 val CirceVersion = "0.11.2"
 val ScalaTestVersion = "3.2.2"
+val MockitoVersion = "1.16.2"
 val DoobieVersion = "0.9.0"
 val LogbackVersion = "1.2.3"
 
@@ -24,6 +25,7 @@ lazy val root = (project in file("."))
       "org.http4s"      %% "http4s-dsl"          % Http4sVersion,
       "io.circe"        %% "circe-generic"       % CirceVersion,
       "org.scalatest"   %% "scalatest"           % ScalaTestVersion % "test",
+      "org.mockito"     %% "mockito-scala"       % MockitoVersion % "test",
       "ch.qos.logback"  %  "logback-classic"     % LogbackVersion,
       "com.typesafe"    % "config"               % "1.4.0"
     ),

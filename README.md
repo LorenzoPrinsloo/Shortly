@@ -141,6 +141,12 @@ Which will use the configured docker-compose.yml to start up
  - a instance of the main REST app (shortly-app)
  - a  postgresql database instance (shortly-postgres)
  
+PS: If you see a Prompt that gives you the warning
+
+ *The image for the service you're trying to recreate has been removed. If you continue, volume data could be lost. Consider backing up your data before continuing.*
+ 
+ Just type in Y and enter to continue
+ 
 Once that's run you should see the web-service start on port 8080
 
 ## Postman Collection

@@ -26,7 +26,7 @@ object DoobieConfig {
   // A transactor that gets connections from java.sql.DriverManager and executes blocking operations
   // on an our synchronous EC. See the chapter on connection handling for more info.
 
-  val xa: Aux[IO, Unit] = Transactor.fromDriverManager[IO](
+  implicit val xa: Aux[IO, Unit] = Transactor.fromDriverManager[IO](
     "org.postgresql.Driver",     // driver classname
     url,
     username,

@@ -16,7 +16,12 @@ import xite.shortly.DoobieConfig.meta._
 class URLRedirectDAO() {
   final case class UnresolvedCollisionError(e: String) extends Exception
 
-  def findOrInsertShortUrl(id: UUID, fullUrl: String): ConnectionIO[URLRedirect] = {
+  def findOrInsertShortUrl(id: UUID, fullUrl: String)(implicit transactor: Transactor[IO]): IO[URLRedirect] = {
+    findOrInsertShortUrlQuery(id, fullUrl)
+      .transact(transactor)
+  }
+
+  def findOrInsertShortUrlQuery(id: UUID, fullUrl: String): ConnectionIO[URLRedirect] = {
 
     findById(id)
       .flatMap { existingRedirect =>
@@ -31,7 +36,11 @@ class URLRedirectDAO() {
       .query[URLRedirect].option
   }
 
-  def findByShortlyIdentifier(shortIdentifier: String): ConnectionIO[Option[URLRedirect]] = {
+  def findByShortlyIdentifier(shortIdentifier: String)(implicit transactor: Transactor[IO]): IO[Option[URLRedirect]] = {
+    findByShortlyIdentifierQuery(shortIdentifier).transact(transactor)
+  }
+
+  def findByShortlyIdentifierQuery(shortIdentifier: String): ConnectionIO[Option[URLRedirect]] = {
     sql"SELECT * FROM url_redirects WHERE shortly_identifier = $shortIdentifier"
       .query[URLRedirect].option
   }
@@ -55,7 +64,11 @@ class URLRedirectDAO() {
     }
   }
 
-  def list: ConnectionIO[List[URLRedirect]] = {
+  def list(implicit transactor: Transactor[IO]): IO[List[URLRedirect]] = {
+    listQuery.transact(transactor)
+  }
+
+  def listQuery: ConnectionIO[List[URLRedirect]] = {
     sql"SELECT * FROM url_redirects"
       .query[URLRedirect]
       .to[List]

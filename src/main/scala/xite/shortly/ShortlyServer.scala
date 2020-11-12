@@ -7,14 +7,20 @@ import org.http4s.client.blaze.BlazeClientBuilder
 import org.http4s.implicits._
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.middleware.Logger
+import xite.shortly.database.{RedirectEventDAO, URLRedirectDAO}
+import xite.shortly.DoobieConfig.xa
+
 import scala.concurrent.ExecutionContext.global
 
 object ShortlyServer {
 
+  implicit lazy val urlRedirectDAO: URLRedirectDAO = new URLRedirectDAO()
+  implicit lazy val redirectEventDAO: RedirectEventDAO = new RedirectEventDAO()
+
   def stream[F[_]: ConcurrentEffect](implicit T: Timer[F], C: ContextShift[F]): Stream[F, Nothing] = {
     for {
       client <- BlazeClientBuilder[F](global).stream
-      urlAlg = URLService.impl[F](client)
+      urlAlg = URLService.impl[F]
 
       // Combine Service Routes into an HttpApp.
       // Can also be done via a Router if you
