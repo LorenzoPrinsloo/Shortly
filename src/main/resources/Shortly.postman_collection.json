@@ -1,0 +1,106 @@
+{
+	"info": {
+		"_postman_id": "c6a69657-2d71-479f-85dc-34ef992782df",
+		"name": "Shortly",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Shorten",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"url\": \"https://stackoverflow.com/questions/48467450/cannot-delete-docker-image\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/shorten",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"shorten"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Short URL's",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/list",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Redirect Statistics",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/stats",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"stats"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "4bb13ed1-4a78-3281-94cf-3e9e43395ed1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Aggregated Statistics",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/stats/hourly",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"stats",
+						"hourly"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "4bb13ed1-4a78-3281-94cf-3e9e43395ed1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

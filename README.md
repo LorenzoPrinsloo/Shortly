@@ -124,14 +124,16 @@ if a Id is provided, filters the results to the specific short URL mapping.
     
 ## Running via Docker
 
-Open up a sbt shell and run the following command
+Open up a sbt shell and run the following commands
 
-    docker:stage
+    update // resolve project dependencies
+
+    docker:stage // generate native executable and dockerfile
     
 this will generate a native executable for the project 
 and a Dockerfile that points to the location of it.
 
-Next run the following command in another terminal window
+Next run the following command in another terminal window in the Project Root folder
 
     docker-compose up --force-recreate
     
@@ -140,4 +142,9 @@ Which will use the configured docker-compose.yml to start up
  - a  postgresql database instance (shortly-postgres)
  
 Once that's run you should see the web-service start on port 8080
+
+## Postman Collection
+
+If you have [Postman](https://www.postman.com/) you can import my collection
+ that has the API endpoints set up to use from the get go. *Located at src/main/resources/Shortly.postman_collection.json*
 

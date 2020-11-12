@@ -9,7 +9,6 @@ import cats.effect._
 import cats.implicits._
 import xite.shortly.DoobieConfig._
 
-// TODO Bootstrap Database
 object Bootstrap {
 
   val dropUrlRedirects: ConnectionIO[Int] = sql"DROP TABLE IF EXISTS url_redirects CASCADE".update.run
